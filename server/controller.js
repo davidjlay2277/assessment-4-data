@@ -13,9 +13,26 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 });
 
 module.exports = {
+  deleteCity: (req,res) => {
+    console.log(req.params)
+  },  
+    getCities: (req, res) => {
+    sequelize.query(
+      `SELECT 
+            t1.city_id,
+            t1.name AS city,
+            t1.rating,
+            t2.name AS country
+        FROM cities AS t1
+            LEFT JOIN countries AS t2 ON t2.country_id = t1.country_id `
+    )
+    .then((dbResults) => {
+        res.status(200).send(dbResults[0]);
+      });
+  },
   createCity: (req, res) => {
     let { name, rating, countryId } = req.body;
-    console.log(name, rating, countryId)
+    console.log(name, rating, countryId);
     sequelize
       .query(
         `INSERT INTO cities (name, rating, country_id)
@@ -23,7 +40,7 @@ module.exports = {
         `
       )
       .then((dbResults) => {
-        res.status(200).send(dbResults);
+        res.status(200).send(dbResults[0]);
       });
   },
   getCountries: (req, res) => {
