@@ -13,20 +13,27 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 });
 
 module.exports = {
-  deleteCity: (req,res) => {
-    console.log(req.params)
-  },  
-    getCities: (req, res) => {
-    sequelize.query(
-      `SELECT 
+  deleteCity: (req, res) => {
+    let { id } = req.params;
+    sequelize
+      .query(`DELETE FROM cities WHERE city_id = ${id}`)
+      .then((dbResults) => {
+        res.status(200).send(dbResults[0]);
+      });
+  },
+  getCities: (req, res) => {
+    sequelize
+      .query(
+        `SELECT 
             t1.city_id,
             t1.name AS city,
             t1.rating,
             t2.name AS country
         FROM cities AS t1
-            LEFT JOIN countries AS t2 ON t2.country_id = t1.country_id `
-    )
-    .then((dbResults) => {
+            LEFT JOIN countries AS t2 ON t2.country_id = t1.country_id 
+            ORDER by rating DESC`
+      )
+      .then((dbResults) => {
         res.status(200).send(dbResults[0]);
       });
   },
@@ -71,7 +78,7 @@ module.exports = {
                 ,rating INTEGER
                 ,country_id INTEGER REFERENCES countries(country_id)
                );
-
+            
             insert into countries (name)
             values ('Afghanistan'),
             ('Albania'),
@@ -268,6 +275,12 @@ module.exports = {
             ('Yemen'),
             ('Zambia'),
             ('Zimbabwe');
+
+            INSERT INTO cities (name, rating, country_id)
+            VALUES
+            ('Minneapolis',5,187),
+            ('Athens',4,67),
+            ('Tokyo',5,86);
         `
       )
       .then(() => {
