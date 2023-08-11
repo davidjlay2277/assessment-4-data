@@ -10,7 +10,6 @@ function handleSubmit(e) {
         alert ('You must enter a city name')
         return
     }
-
     let userRating = document.querySelector('input[name="rating"]:checked').value
     let body = {
         name: nameInput.value, 

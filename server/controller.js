@@ -13,6 +13,19 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 });
 
 module.exports = {
+  createCity: (req, res) => {
+    let { name, rating, countryId } = req.body;
+    console.log(name, rating, countryId)
+    sequelize
+      .query(
+        `INSERT INTO cities (name, rating, country_id)
+        VALUES ('${name}', ${rating}, ${countryId})
+        `
+      )
+      .then((dbResults) => {
+        res.status(200).send(dbResults);
+      });
+  },
   getCountries: (req, res) => {
     sequelize
       .query(
